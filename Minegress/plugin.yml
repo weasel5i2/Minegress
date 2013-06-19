@@ -1,0 +1,12 @@
+name: Minegress
+main: net.weasel.Minegress.Minegress
+author: weasel5i2
+version: 0.1
+commands:
+  mkportal:
+    description: Creates a portal at the target block
+    usage: /mkportal
+  mkxm:
+    description: Creates a pile of exotic matter
+    usage: /mkxm
+    
