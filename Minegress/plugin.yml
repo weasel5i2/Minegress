@@ -9,4 +9,7 @@ commands:
   mkxm:
     description: Creates a pile of exotic matter
     usage: /mkxm
-    
+  mapper:
+    description: Render the dynmap from -2000,-2000 to 2000,2000
+    usage: /mapper
+   

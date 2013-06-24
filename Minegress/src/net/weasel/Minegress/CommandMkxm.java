@@ -35,7 +35,7 @@ public class CommandMkxm implements CommandExecutor
 			
 			player.sendMessage( "You make some XM." );
 
-			ResultSet result = Database.read_database( "SELECT * FROM minegress.players WHERE name = 'weasel5i2';" );
+			ResultSet result = Database.db_execute( "SELECT * FROM minegress.players WHERE name = 'weasel5i2';" );
 			
 			try 
 			{

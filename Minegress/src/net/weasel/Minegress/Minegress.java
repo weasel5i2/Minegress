@@ -6,6 +6,7 @@ import org.bukkit.Server;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Minegress extends JavaPlugin 
@@ -16,6 +17,16 @@ public class Minegress extends JavaPlugin
 	public static Server server = null;
 	public static ConsoleCommandSender console = null;
 	public static boolean pluginEnabled = false;
+	
+	public static int map_x = 0;
+	public static int map_y = 120;
+	public static int map_z = 0;
+	public static Player map_agent = null;
+	public static int map_min = -4096;
+	public static int map_max = 4096;
+	public static int map_step_x = 16;
+	public static int map_step_z = 16;
+	public static int map_interval = 32;
 
     @Override
 	public void onDisable() 
@@ -74,6 +85,7 @@ public class Minegress extends JavaPlugin
 		
 		addCommand("mkportal", new CommandMkportal(this));
 		addCommand("mkxm", new CommandMkxm(this));
+		addCommand("mapper", new CommandMapper(this));
 		
 		new Listeners(this);
 	}
