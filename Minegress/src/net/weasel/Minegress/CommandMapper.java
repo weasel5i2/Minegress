@@ -45,8 +45,8 @@ public class CommandMapper implements CommandExecutor
 			}
 			
 			Minegress.map_agent.sendMessage( "Starting mapping process (" + Minegress.map_x + "," + Minegress.map_z + " to " 
-										    + ( Minegress.map_max - Minegress.map_x ) + "," + ( Minegress.map_max - Minegress.map_y ) + ").." );
-			Minegress.map_agent.teleport( new Location( Minegress.map_agent.getWorld(), Minegress.map_min, Minegress.map_y, Minegress.map_min ) );
+										    + ( Minegress.map_max - Minegress.map_x ) + "," + ( Minegress.map_max - Minegress.map_agent.getLocation().getY() ) + ").." );
+			Minegress.map_agent.teleport( new Location( Minegress.map_agent.getWorld(), Minegress.map_min, Minegress.map_agent.getLocation().getY(), Minegress.map_min ) );
 
 			BukkitTask task = new MapperTask(plugin).runTaskTimer( plugin, 1, Minegress.map_interval );
 			

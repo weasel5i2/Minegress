@@ -31,5 +31,4 @@ public class CommandMkportal implements CommandExecutor
 		
 		return false;
 	}
-
 }

@@ -33,6 +33,7 @@ public class Database
 		{
 			e.printStackTrace();
 		}
+		
 		return results;
 	}
 	
@@ -65,12 +66,13 @@ public class Database
 			
 			String query = "INSERT INTO minegress.players VALUES ('" + player + ",'" + player_id + "','','','','','','';";
 			ResultSet result = db_execute( query );
-			result.close();
 			
 			if( db_player_exists( player ) == true )
 			{
 				created = true;
 			}
+
+			result.close();
 		}
 
 		return( created );
@@ -109,13 +111,13 @@ public class Database
 
 	public static boolean db_player_id_exists( String player_id ) throws SQLException
 	{
-		Boolean exists = false;
+		boolean exists = false;
 		String query = "SELECT COUNT(*) FROM minegress.players WHERE player_id = '" + player_id + "';";
 		ResultSet result = db_execute( query );
 
 		if( result.next() )
 		{
-			if( result.getInt("COUNT(*)") > 0 )
+			if( result.getInt( "COUNT(*)" ) > 0 )
 			{
 				exists = true;
 			}
@@ -126,4 +128,61 @@ public class Database
 		return( exists );
 	}
 	
+	public static double[] db_get_portal_location( String portal_id ) throws SQLException
+	{
+		double pos_x = -1;
+		double pos_y = -1;
+		double pos_z = -1;
+		
+		String query = "SELECT * FROM minegress.portals WHERE portal_id = '" + portal_id + "';";
+		ResultSet result = db_execute( query );
+		
+		if( result.next() )
+		{
+			if( result.getString( "portal_id" ) == portal_id )
+			{
+				pos_x = Double.parseDouble( result.getString( "portal_x" ) );
+				pos_y = Double.parseDouble( result.getString( "portal_y" ) );
+				pos_z = Double.parseDouble( result.getString( "portal_z" ) );
+			}
+		}
+		
+		result.close();
+
+		double[] location = { pos_x, pos_y, pos_z };
+
+		return( location );
+	}
+	
+	public static boolean db_check_portal_proximity( String portal_id, int distance ) throws SQLException
+	{
+		boolean portal_too_close = false;
+		
+		double pos_x, pos_z, prox_x1, prox_z1, prox_x2, prox_z2;
+		
+		double[] portal_location = db_get_portal_location( portal_id );
+		
+		pos_x = portal_location[0];
+		pos_z = portal_location[2];
+		
+		prox_x1 = pos_x + distance;
+		prox_x2 = pos_x - distance;
+		
+		prox_z1 = pos_z + distance;
+		prox_z2 = pos_z - distance;
+		
+		String query = "SELECT COUNT(*) FROM minegress.portals WHERE ( location_x <= " + prox_x1 + " AND location_z <= " + prox_z1 + " ) OR ";
+		query += "( location_x >= " + prox_x2 + " AND location_z >= " + prox_z2 + " );";
+		
+		ResultSet result = db_execute( query );
+		
+		if( result.getInt( "COUNT(*)" ) > 0 )
+		{
+			portal_too_close = true;
+		}
+		
+		result.close();
+
+		return( portal_too_close );
+	}
 }

@@ -18,7 +18,7 @@ public class MapperTask extends BukkitRunnable
 	{
 		int x = Minegress.map_x;
 		int z = Minegress.map_z;
-		int y = Minegress.map_y;
+		double y = Minegress.map_agent.getLocation().getY();
 		
 		plugin.toString();
 		
@@ -57,6 +57,7 @@ public class MapperTask extends BukkitRunnable
 		loc.setYaw( yaw );
 		
 		Minegress.map_agent.teleport( loc );
+		// plugin.getServer().dispatchCommand( Minegress.map_agent, "dynmap render" );
 		
 	}
 

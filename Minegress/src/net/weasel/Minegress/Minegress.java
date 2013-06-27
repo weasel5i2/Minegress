@@ -19,14 +19,13 @@ public class Minegress extends JavaPlugin
 	public static boolean pluginEnabled = false;
 	
 	public static int map_x = 0;
-	public static int map_y = 120;
 	public static int map_z = 0;
 	public static Player map_agent = null;
 	public static int map_min = -4096;
 	public static int map_max = 4096;
-	public static int map_step_x = 16;
-	public static int map_step_z = 16;
-	public static int map_interval = 32;
+	public static int map_step_x = 32;
+	public static int map_step_z = 32;
+	public static int map_interval = 33;
 
     @Override
 	public void onDisable() 
