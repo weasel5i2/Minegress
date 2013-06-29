@@ -12,4 +12,6 @@ commands:
   mapper:
     description: Render the dynmap from -2000,-2000 to 2000,2000
     usage: /mapper
-   
+  mknpc:
+    description: Create citizens for the Minegress world
+    usage: /mknpc
