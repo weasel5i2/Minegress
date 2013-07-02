@@ -1,6 +1,5 @@
 package net.weasel.Minegress;
 
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,9 +21,10 @@ public class CommandMkportal implements CommandExecutor
 		{
 			Player player = (Player)sender;
 			
-			Block block = player.getTargetBlock( null,  10 );
+			// Block block = player.getTargetBlock( null,  10 );
 			
-			player.sendMessage( "The block is " + block.getTypeId() );
+			player.sendMessage( "The yaw is " + player.getLocation().getYaw() );
+			player.sendMessage( "The pitch is " + player.getLocation().getPitch() );
 		
 			return true;
 		}

@@ -12,11 +12,17 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
+import de.kumpelblase2.remoteentities.api.RemoteEntity;
+import de.kumpelblase2.remoteentities.api.events.RemoteDesireStopEvent;
 
 public class Listeners implements Listener 
 {
-	public Listeners(Minegress plugin) 
+	public static void logOutput( String message ) { Minegress.logOutput( message ); }
+	public static Minegress plugin;
+
+	public Listeners(Minegress instance) 
 	{
+		plugin = instance;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 	
@@ -38,14 +44,19 @@ public class Listeners implements Listener
 			
 			if( target instanceof Player )
 			{
-				Player player = (Player)target;
-				player.sendMessage( "Canceled orb" );
-				
 				event.setCancelled( true );
-		    	}
+		    }
 		}
 	}
-	
+
+	@EventHandler
+	public void npc_finished_moving( RemoteDesireStopEvent event )
+	{
+		RemoteEntity npc = event.getRemoteEntity();
+		
+		new PopulationMovementTask( plugin, npc).runTaskLater( plugin, 6000 );
+	}
+		
 	@EventHandler
 	public void player_xm_pickup(PlayerExpChangeEvent event) 
     {

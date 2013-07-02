@@ -1,23 +1,18 @@
 package net.weasel.Minegress;
 
-import java.util.List;
-
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import de.kumpelblase2.remoteentities.EntityManager;
-import de.kumpelblase2.remoteentities.RemoteEntities;
-import de.kumpelblase2.remoteentities.api.RemoteEntity;
-
 public class MainTask extends BukkitRunnable
 {
-	private final JavaPlugin plugin;
+	@SuppressWarnings("unused")
+	private static JavaPlugin plugin;
 	
 	public static void logOutput( String message ) { Minegress.logOutput( message ); }
 
-	public MainTask(Minegress plugin)
+	public MainTask( Minegress instance )
     {        
-    	this.plugin = plugin;
+    	plugin = instance;
     }
 
 	@Override
@@ -33,21 +28,13 @@ public class MainTask extends BukkitRunnable
 		// 	npc.setVelocity( npc.getLocation().getDirection() );
 		// }
 		
-		logOutput( "MainTask tick.." );
-		
-		EntityManager manager = RemoteEntities.createManager( plugin );
+		// logOutput( "MainTask tick.." );
 
-		List<RemoteEntity> npc_list = manager.getAllEntities();
-
-		RemoteEntity npc = null;
-		
-		while( npc_list.iterator().hasNext() )
+		if( Minegress.init_population_done == false )
 		{
-			npc = npc_list.iterator().next();
-			
-			Population.business_as_usual( npc );
+			Population.init();
+			Minegress.init_population_done = true;
 		}
-		
 	}
 
 }

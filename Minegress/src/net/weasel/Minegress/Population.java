@@ -4,42 +4,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import de.kumpelblase2.remoteentities.EntityManager;
+import de.kumpelblase2.remoteentities.RemoteEntities;
 import de.kumpelblase2.remoteentities.api.RemoteEntity;
-import de.kumpelblase2.remoteentities.api.RemoteEntityType;
 import de.kumpelblase2.remoteentities.api.thinking.Desire;
-import de.kumpelblase2.remoteentities.api.thinking.goals.DesireLookAtNearest;
-import de.kumpelblase2.remoteentities.api.thinking.goals.DesireMoveToTarget;
-import de.kumpelblase2.remoteentities.api.thinking.goals.DesireWanderAround;
+import de.kumpelblase2.remoteentities.api.thinking.goals.DesireMoveToLocation;
 
 public class Population 
 {
-	private final JavaPlugin plugin;
+	private static JavaPlugin plugin = null;
 	public static List<String> names = new ArrayList<String>();
-
-	public static Location getTopBlock( Location loc ) { return( Minegress.getTopBlock(loc) ); }
 	public static void logOutput( String message ) { Minegress.logOutput( message ); }
+
+	public static RemoteEntity npc_task = null;
 	
-    public Population(Minegress plugin)
+	public static EntityManager manager = null;
+	
+    public Population(Minegress instance )
     {        
-    	this.plugin = plugin;
+    	plugin = instance;
     }
 	
-	public void init_npc_population()
-	{		
-		RemoteEntity entity = Minegress.manager.createEntity(RemoteEntityType.Human, plugin.getServer().getWorld("Minegress").getSpawnLocation(), false);
-		entity.getMind().addMovementDesire(new DesireWanderAround( entity ), 1);
-		entity.getMind().addMovementDesire(new DesireLookAtNearest( entity, Entity.class, 8F), 1);
-
-		entity.save();
-		
-		entity.spawn( plugin.getServer().getWorld("Minegress").getSpawnLocation() );
-	}
-
 	public static void init_names()
 	{
 		names.add( "Johnson" ); names.add( "Rogers" ); names.add( "Wilson" ); names.add( "Wheaton" ); names.add( "Scott" );
@@ -100,92 +91,90 @@ public class Population
 	
 	public static void business_as_usual( RemoteEntity npc )
 	{
-		logOutput( "business as usual for " + npc.getBukkitEntity().getCustomName() + "." );
-		
-		if( npc.isStationary() )
-		{		
-			Location destination = i_spy( npc, 10 );
+		Location destination = i_spy( npc, 10 );
 			
-			if( destination != null )
+		if( destination != null )
+		{
+			Desire walk_to = new DesireMoveToLocation( npc, destination );
+			
+			if( npc.getMind().getMovementDesires().size() > 0 )
 			{
-				Desire walk_to = new DesireMoveToTarget( npc, 0 );
-				
-				npc.getMind().addMovementDesire( walk_to, 10 );
+				npc.getMind().clearMovementDesires();
 			}
-
+			
+			npc.getMind().addMovementDesire( walk_to, 10 );
+			// logOutput( "NPC " + npc.getID() + " deciding to walk to " + (int)destination.getX() + "," + (int)destination.getZ() + "." );
 		}
+	}
+	
+	public static void init()
+	{
+	   	manager = RemoteEntities.createManager( plugin );
+	   	init_names();
+
+	}
+	
+	public static RemoteEntity get_random_npc()
+	{
+		RemoteEntity npc = null;
+		List<RemoteEntity> npc_list = Population.manager.getAllEntities();
+		
+		if( npc_list.size() > 0 )
+		{
+			npc = npc_list.get( (int)( Math.random() * npc_list.size() - 1 ) );
+		}
+		
+		if( npc != null )
+		{
+			// logOutput( "random NPC returned:" + npc.getID() );
+		}
+		
+		return( npc );
+		
 	}
 	
 	public static Location i_spy( RemoteEntity npc, int range )
 	{
+		World world = npc.getBukkitEntity().getWorld();
+		
 		LivingEntity entity = npc.getBukkitEntity();
-		Location loc = entity.getLocation();
-		Location target = null;
 		Block block = null;
+
+		Location target = null;
 		
-		double top_y = 0;
-		double x = loc.getX();
-		double y = loc.getY();
-		double z = loc.getZ();
-		double r = Math.random() * 32;
+		List<Block> visible_blocks = entity.getLineOfSight(null, range );
 		
-		if( Math.random() < .5 )
+		if( visible_blocks.size() > 0 )
 		{
-			if( Math.random() < .5 )
+			// logOutput( "NPC " + npc.getID() + " sees " + visible_blocks.size() + " blocks." );
+			
+			for( int c = visible_blocks.size() - 1; c >= 0; c-- )
 			{
-				for( double c = ( x + range + r ); c >= x; c-- )
+				block = world.getHighestBlockAt( visible_blocks.get(c).getLocation() ).getRelative(BlockFace.DOWN);
+				
+				// logOutput( "Checking block (" + block.getLocation().getX() + "," + block.getLocation().getY() + "," + block.getLocation().getZ() + "): " + block.getTypeId() );
+				
+				if( block.getTypeId() == 44 )
 				{
-					block = loc.getWorld().getBlockAt( (int)c, (int)y, (int)z );
-					top_y = getTopBlock( block.getLocation() ).getY();					
-
-					if( loc.getWorld().getBlockAt((int)c, (int)top_y, (int)z ).getTypeId() == 44 )
-					{
-						target = loc.getWorld().getBlockAt((int)c, (int)top_y, (int)z ).getLocation();
-					}
-				}
-			}
-			else
-			{
-				for( double c = ( x - range - r ); c >= x; c++ )
-				{
-					block = loc.getWorld().getBlockAt( (int)c, (int)y, (int)z );
-					top_y = getTopBlock( block.getLocation() ).getY();					
-
-					if( loc.getWorld().getBlockAt((int)c, (int)top_y, (int)z ).getTypeId() == 44 )
-					{
-						target = loc.getWorld().getBlockAt((int)c, (int)top_y, (int)z ).getLocation();
-					}
+					target = block.getLocation();
+					break;
 				}
 			}
 		}
+
+		if( target == null )
+		{
+			// logOutput( "Target null for NPC " + npc.getID() + ". Looking elsewhere." );
+
+			float yaw = entity.getLocation().getYaw() + (float) (Math.random() * 90);
+			
+			npc.setHeadYaw( yaw );
+			npc.setYaw( yaw, true );
+			npc.setPitch( 20 );
+		}
 		else
 		{
-			if( Math.random() < .5 )
-			{
-				for( double c = ( z + range + r ); c >= z; c++ )
-				{
-					block = loc.getWorld().getBlockAt( (int)x, (int)y, (int)c );
-					top_y = getTopBlock( block.getLocation() ).getY();					
-
-					if( loc.getWorld().getBlockAt((int)c, (int)top_y, (int)z ).getTypeId() == 44 )
-					{
-						target = loc.getWorld().getBlockAt((int)c, (int)top_y, (int)z ).getLocation();
-					}
-				}
-			}
-			else
-			{
-				for( double c = ( z - range - r ); c >= z; c++ )
-				{
-					block = loc.getWorld().getBlockAt( (int)x, (int)y, (int)c );
-					top_y = getTopBlock( block.getLocation() ).getY();					
-
-					if( loc.getWorld().getBlockAt((int)c, (int)top_y, (int)z ).getTypeId() == 44 )
-					{
-						target = loc.getWorld().getBlockAt((int)c, (int)top_y, (int)z ).getLocation();
-					}
-				}
-			}
+			// logOutput( "i_spy: " + target.getX() + "," + target.getY() + "," + target.getZ() + "." );
 		}
 		
 		return( target );
