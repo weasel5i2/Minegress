@@ -6,9 +6,14 @@ import org.bukkit.entity.Player;
 
 public class Portals 
 {
+    private Block getTargetBlock( Player player, int range )
+    {
+    	return( Blocks.getTargetBlock( player, range ) );
+    }
+	
 	public boolean is_portal( Player player )
 	{
-		Block block = player.getTargetBlock( null, 10 );
+		Block block = getTargetBlock( player, 10 );
 		
 		if( block.getType() == Material.BEACON )
 		{

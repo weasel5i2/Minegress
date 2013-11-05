@@ -19,6 +19,11 @@ public class CommandMkxm implements CommandExecutor
     	this.plugin = plugin;
     }
 
+    private Block getTargetBlock( Player player, int range )
+    {
+    	return( Blocks.getTargetBlock( player, range ) );
+    }
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] arg3) 
 	{
@@ -26,7 +31,7 @@ public class CommandMkxm implements CommandExecutor
 		{
 			Player player = (Player)sender;
 			
-			Block block = player.getTargetBlock( null,  10 );
+			Block block = getTargetBlock( player, 10 );
 			
 			for( int c = 1; c < 32; c++ )
 			{

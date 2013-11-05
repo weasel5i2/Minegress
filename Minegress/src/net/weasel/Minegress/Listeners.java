@@ -12,12 +12,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
-import de.kumpelblase2.remoteentities.api.RemoteEntity;
-import de.kumpelblase2.remoteentities.api.events.RemoteDesireStopEvent;
 
 public class Listeners implements Listener 
 {
 	public static void logOutput( String message ) { Minegress.logOutput( message ); }
+	public static void debugOutput( String message ) { Minegress.debugOutput( message ); }
+	
 	public static Minegress plugin;
 
 	public Listeners(Minegress instance) 
@@ -49,14 +49,6 @@ public class Listeners implements Listener
 		}
 	}
 
-	@EventHandler
-	public void npc_finished_moving( RemoteDesireStopEvent event )
-	{
-		RemoteEntity npc = event.getRemoteEntity();
-		
-		new PopulationMovementTask( plugin, npc).runTaskLater( plugin, 6000 );
-	}
-		
 	@EventHandler
 	public void player_xm_pickup(PlayerExpChangeEvent event) 
     {

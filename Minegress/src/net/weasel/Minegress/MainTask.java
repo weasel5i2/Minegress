@@ -9,6 +9,7 @@ public class MainTask extends BukkitRunnable
 	private static JavaPlugin plugin;
 	
 	public static void logOutput( String message ) { Minegress.logOutput( message ); }
+	public static void debugOutput( String message ) { Minegress.debugOutput( message ); }
 
 	public MainTask( Minegress instance )
     {        
@@ -20,21 +21,6 @@ public class MainTask extends BukkitRunnable
 	{
 		// Do the portal upkeep, xm expression, etc..
 		//
-		
-		// Entity npc = Population.get_random_npc( plugin );
-		
-		// if( npc != null )
-		// {
-		// 	npc.setVelocity( npc.getLocation().getDirection() );
-		// }
-		
-		// logOutput( "MainTask tick.." );
-
-		if( Minegress.init_population_done == false )
-		{
-			Population.init();
-			Minegress.init_population_done = true;
-		}
 	}
 
 }
