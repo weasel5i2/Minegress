@@ -25,6 +25,7 @@ public class Minegress extends JavaPlugin
 	public static ArrayList<Location> walk_to = new ArrayList<Location>();
 	
 	public static boolean debugMode = false;
+	public static boolean protectBlocks = true;
 
 	public static Player map_agent = null;
 	public static int map_interval = 33;
@@ -99,6 +100,7 @@ public class Minegress extends JavaPlugin
 		addCommand("mkportal", new CommandMkportal(this));
 		addCommand("mkxm", new CommandMkxm(this));
 		addCommand("mapper", new CommandMapper(this));
+		addCommand("protect", new CommandProtect(this));
 
 		new Listeners(this);
 		

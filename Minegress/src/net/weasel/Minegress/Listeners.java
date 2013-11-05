@@ -31,7 +31,10 @@ public class Listeners implements Listener
 	{
 		if( event.getPlayer().isOp() == false )
 		{
-			event.setCancelled( true );
+			if( Minegress.protectBlocks == false )
+			{
+				event.setCancelled( true );
+			}
 		}
 	}
 	
